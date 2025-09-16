@@ -16,7 +16,7 @@ def create_contact():
     nickname = request.json.get("nickname")
     monday = request.json.get("monday")
 
-    if not first_name and not last_name and not nickname:
+    if not first_name or not last_name or not nickname:
         return (
             jsonify({"message": "You must include at least first name, last name, or nickname"}), 400,
         )
