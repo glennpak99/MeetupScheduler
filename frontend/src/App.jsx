@@ -41,44 +41,44 @@ function App() {
 
   // Calculate common availability
   const calculateTimesAvailable = () => {
-    const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]
-    const result = {}
+  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+  const result = {};
 
-    days.forEach(day => {
-      const allSlots = contacts.map(contact => contact.availability?.[day] || [])
+  days.forEach(day => {
+    const allRanges = contacts.map(contact => {
+      const slots = contact.availability?.[day] || [];
+      return slots.map(slot => {
+        const [start, end] = slot.split("-").map(Number);
+        return [start, end];
+      });
+    });
 
-      const parsed = allSlots.map(slots => {
-        let hours = new Set()
-        slots.forEach(slot => {
-          const [start, end] = slot.split("-").map(Number)
-          for (let i = start; i <= end; i++) hours.add(i)
-        })
-        return hours
-      })
+    let overlaps = allRanges[0] || [];
+    allRanges.slice(1).forEach(userRanges => {
+      const newOverlaps = [];
+      overlaps.forEach(([oStart, oEnd]) => {
+        userRanges.forEach(([uStart, uEnd]) => {
+          const start = Math.max(oStart, uStart);
+          const end = Math.min(oEnd, uEnd);        
+          if (start < end) {                       
+            newOverlaps.push([start, end]);      
+          }
+        });
+      });
+      overlaps = newOverlaps;                     
+    });
 
-      let intersection = parsed[0] || new Set()
-      parsed.slice(1).forEach(s => {
-        intersection = new Set([...intersection].filter(x => s.has(x)))
-      })
+    if (overlaps.length === 0) {
+      result[day] = "No common availability";
+    } else {
+      result[day] = overlaps.map(([start,end]) => `${start}-${end}`).join(", ");
+    }
+  });
 
-      const sorted = [...intersection].sort((a,b) => a-b)
-      const ranges = []
-      let rangeStart = null
+  console.log(result);
+  alert(JSON.stringify(result, null, 2));
+}
 
-      for (let i = 0; i < sorted.length; i++) {
-        if (rangeStart === null) rangeStart = sorted[i]
-        if (sorted[i+1] !== sorted[i]+1) {
-          ranges.push(rangeStart === sorted[i] ? `${rangeStart}` : `${rangeStart}-${sorted[i]}`)
-          rangeStart = null
-        }
-      }
-
-      result[day] = ranges.length ? ranges.join(", ") : "No common availability"
-    })
-
-    console.log(result)
-    alert(JSON.stringify(result, null, 2))
-  }
 
   return (
     <>
