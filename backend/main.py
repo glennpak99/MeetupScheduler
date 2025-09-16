@@ -11,9 +11,9 @@ def get_contact():
 
 @app.route("/create_contact", methods = ["POST"])
 def create_contact():
-    first_name = request.json.get("firstName")
-    last_name = request.json.get("lastName")
-    nickname = request.json.get("nickname")
+    first_name = request.json.get("firstName") or None
+    last_name = request.json.get("lastName") or None
+    nickname = request.json.get("nickname") or None
     availability = request.json.get("availability", {})
     
 
@@ -40,13 +40,6 @@ def update_contact(user_id):
     contact.first_name = data.get("firstName", contact.first_name)
     contact.last_name = data.get("lastName", contact.last_name)
     contact.nickname = data.get("nickname", contact.nickname)
-    # contact.monday = data.get("monday", contact.monday)
-    # contact.tuesday = data.get("tuesday", contact.tuesday)
-    # contact.wednesday = data.get("wednesday", contact.wednesday)
-    # contact.thursday = data.get("thursday", contact.thursday)
-    # contact.friday = data.get("friday", contact.friday)
-    # contact.saturday = data.get("saturday", contact.saturday)
-    # contact.sunday = data.get("sunday", contact.sunday)
     contact.availability = data.get("availability", contact.availability)
 
     db.session.commit()

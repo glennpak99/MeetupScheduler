@@ -29,13 +29,6 @@ const ContactList = ({contacts, updateContact, updateCallback}) => {
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Nickname</th>
-                    {/* <th>Monday</th>
-                    <th>Tuesday</th>
-                    <th>Wednesday</th>
-                    <th>Thursday</th>
-                    <th>Friday</th>
-                    <th>Saturday</th>
-                    <th>Sunday</th> */}
                     {days.map((day) => <th key={day}>{day.charAt(0).toUpperCase() + day.slice(1)}</th>)}
                     <th>Actions</th>
                 </tr>
@@ -46,13 +39,6 @@ const ContactList = ({contacts, updateContact, updateCallback}) => {
                         <td>{contact.firstName}</td>
                         <td>{contact.lastName}</td>
                         <td>{contact.nickname}</td>
-                        {/* <td>{contact.monday}</td>
-                        <td>{contact.tuesday}</td>
-                        <td>{contact.wednesday}</td>
-                        <td>{contact.thursday}</td>
-                        <td>{contact.friday}</td>
-                        <td>{contact.saturday}</td>
-                        <td>{contact.sunday}</td> */}
                         {days.map((day) => (
                             <td key={day}>
                                 {contact.availability?.[day]?.join(", ") || "N/A"}
