@@ -4,32 +4,44 @@ const ContactForm = ({existingContact = {}, updateCallback}) => {
     const [firstName, setFirstName] = useState(existingContact.firstName || "")
     const [lastName, setLastName] = useState(existingContact.lastName || "")
     const [nickname, setNickname] = useState(existingContact.nickname || "")
-    const [monday, setMonday] = useState(existingContact.monday || "")
-    const [tuesday, setTuesday] = useState(existingContact.tuesday || "")
-    const [wednesday, setWednesday] = useState(existingContact.wednesday || "")
-    const [thursday, setThursday] = useState(existingContact.thursday || "")
-    const [friday, setFriday] = useState(existingContact.friday || "")
-    const [saturday, setSaturday] = useState(existingContact.saturday || "")
-    const [sunday, setSunday] = useState(existingContact.sunday || "")
+    // const [monday, setMonday] = useState(existingContact.monday || "")
+    // const [tuesday, setTuesday] = useState(existingContact.tuesday || "")
+    // const [wednesday, setWednesday] = useState(existingContact.wednesday || "")
+    // const [thursday, setThursday] = useState(existingContact.thursday || "")
+    // const [friday, setFriday] = useState(existingContact.friday || "")
+    // const [saturday, setSaturday] = useState(existingContact.saturday || "")
+    // const [sunday, setSunday] = useState(existingContact.sunday || "")
+    const [availability, setAvailability] = useState(existingContact.availability || {})
 
     const updating = Object.entries(existingContact).length !== 0
 
-    const daysOfWeek = ["monday",]
+    const daysOfWeek = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
 
     const onSubmit = async(e) => {
         e.preventDefault()
-
+        const parsedAvailability = {};
+            for (const day of daysOfWeek) {
+                const val = availability[day];
+                if (typeof val === "string") {
+                    parsedAvailability[day] = val.split(",").map(slot => slot.trim());
+                } else if (Array.isArray(val)) {
+                    parsedAvailability[day] = val; // already an array
+                } else {
+                    parsedAvailability[day] = [];
+                }
+            }
         const data = {
             firstName,
             lastName,
             nickname,
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday
+            // monday,
+            // tuesday,
+            // wednesday,
+            // thursday,
+            // friday,
+            // saturday,
+            // sunday
+            availability: parsedAvailability
         }
         const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
         const options = {
@@ -73,7 +85,21 @@ const ContactForm = ({existingContact = {}, updateCallback}) => {
                     value = {nickname} 
                     onChange = {(e) => setNickname(e.target.value)}
                 />
-                <p>
+                {daysOfWeek.map(day => (
+                    <p key={day}>
+                        <label htmlFor={day}>{day.charAt(0).toUpperCase() + day.slice(1)}:</label>
+                        <input
+                        type="text"
+                        id={day}
+                        placeholder="e.g., 1-4,6-9,13-18"
+                        value={availability[day] || ""}
+                        onChange={(e) =>
+                            setAvailability({ ...availability, [day]: e.target.value })
+                        }
+                        />
+                    </p>
+                    ))}
+                {/* <p>
                     <label htmlFor = "monday">Monday:</label>
                     <input
                         type = "text"
@@ -136,7 +162,7 @@ const ContactForm = ({existingContact = {}, updateCallback}) => {
                         value = {sunday}
                         onChange = {(e) => setSunday(e.target.value)}
                     />
-                </p>
+                </p> */}
             </div>
             <button type = "submit"> {updating ? "Update" : "Create" }
             </button>

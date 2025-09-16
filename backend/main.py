@@ -14,14 +14,14 @@ def create_contact():
     first_name = request.json.get("firstName")
     last_name = request.json.get("lastName")
     nickname = request.json.get("nickname")
-    monday = request.json.get("monday")
+    availability = request.json.get("availability", {})
+    
 
-    if not first_name or not last_name or not nickname:
+    if not first_name and not last_name and not nickname:
         return (
             jsonify({"message": "You must include at least first name, last name, or nickname"}), 400,
         )
-    
-    new_contact = Contact(first_name = first_name, last_name = last_name, nickname = nickname, monday = monday)
+    new_contact = Contact(first_name = first_name, last_name = last_name, nickname = nickname, availability = availability)
     try:
         db.session.add(new_contact)
         db.session.commit()
@@ -40,13 +40,14 @@ def update_contact(user_id):
     contact.first_name = data.get("firstName", contact.first_name)
     contact.last_name = data.get("lastName", contact.last_name)
     contact.nickname = data.get("nickname", contact.nickname)
-    contact.monday = data.get("monday", contact.monday)
-    contact.tuesday = data.get("tuesday", contact.tuesday)
-    contact.wednesday = data.get("wednesday", contact.wednesday)
-    contact.thursday = data.get("thursday", contact.thursday)
-    contact.friday = data.get("friday", contact.friday)
-    contact.saturday = data.get("saturday", contact.saturday)
-    contact.sunday = data.get("sunday", contact.sunday)
+    # contact.monday = data.get("monday", contact.monday)
+    # contact.tuesday = data.get("tuesday", contact.tuesday)
+    # contact.wednesday = data.get("wednesday", contact.wednesday)
+    # contact.thursday = data.get("thursday", contact.thursday)
+    # contact.friday = data.get("friday", contact.friday)
+    # contact.saturday = data.get("saturday", contact.saturday)
+    # contact.sunday = data.get("sunday", contact.sunday)
+    contact.availability = data.get("availability", contact.availability)
 
     db.session.commit()
 
