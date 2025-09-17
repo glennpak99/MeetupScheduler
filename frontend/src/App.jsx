@@ -40,6 +40,7 @@ function App() {
   }
 
   // Calculate common availability
+  //Takes in list of user availability and returns overlapping time slots where all users are free
   const calculateTimesAvailable = () => {
   const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
   const result = {};
